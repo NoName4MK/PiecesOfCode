@@ -1,0 +1,157 @@
+<html>
+
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            padding: 3px;
+            text-align: center;
+        }
+
+        th {
+            font-weight: bold;
+            background-color: #E6E6E6;
+        }
+        td{
+            background-color: rgb(158, 168, 163);  
+        }
+        td:hover {
+            -webkit-transform: scale(1.3);
+            -ms-transform: scale(1.3);
+            transform: scale(1.3);
+            opacity: 0.6;
+        }
+    </style>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div id="select"></div>
+    <div id="calendar"></div>
+
+    <script>
+        // Create Calendar
+        function createCalendar(id, year, month) {
+
+            let date = new Date(year,month-1,1,1,0,0),
+            numberDaysWeek=7,
+            endDateMonth = new Date(year,month,0),
+            endDate=endDateMonth.getDate();
+            option ={
+                weekday: 'long',
+                timezone: 'UTC',
+            },
+            dayOfWeek={
+                Monday:'пн',
+                Tuesday:'вт',
+                Wednesday:'ср',
+                Thursday:'чт',
+                Friday:'пт',
+                Saturday:'сб',
+                Sunday:'вс',   
+            };
+        
+            let startNameDay=date.toLocaleString("en-US", option);
+      
+            let col;
+            let startNumber=0;
+            if (endDate%7==0) col=endDate/7;
+            else {
+                col=(endDate-(endDate%7))/7+1;
+            };
+      
+            let elem = document.getElementById(id)
+            let table = document.createElement('table');
+            let nextDay=0;
+            for (i = 0; i < col+1; i++) {
+                let tr = document.createElement('tr');
+                if (i == 0) {
+                    let n=0;
+                    for(let key in dayOfWeek){
+                        let td;
+                        td = document.createElement('th');
+                        td.innerHTML = `<srtong> ${dayOfWeek[key]}</srtong>`;
+                        tr.appendChild(td);
+                        if (startNameDay==key) startNumber=n;
+                        n++;
+                    }
+                }
+                else{
+                    for (j = 0; j < numberDaysWeek; j++) {
+                        let td, value="";
+                        td = document.createElement('td');
+                        if (nextDay<endDate)
+                            if((nextDay==0)&(startNumber>j)) value="";
+                            else value=++nextDay;
+                        td.innerHTML = `<srtong>${value} </srtong>`;
+                        
+                        tr.appendChild(td);
+                    }
+                }
+                table.appendChild(tr);
+            }
+            elem.appendChild(table);
+        }
+
+        //createCalendar('calendar', 2019, 4)
+        let  year= new Array(2018,2019,2020);
+        let  month= new Array(1,2,3,4,5,6);
+
+        createSelect('select','year',year);
+        createSelect('select','manth',month);
+
+        function createSelect(id, className, arrayData){
+            let elem = document.getElementById(id),
+            select = document.createElement('select');
+            select.className=className;
+            select.id=className;
+            select.size=1;
+            if (arrayData.length>0){
+                arrayData.forEach(function(element) {
+                    let option = document.createElement('option');
+                    option.innerHTML=element;
+                    select.appendChild(option);
+                });
+            }
+            
+            select.addEventListener('change', (event) => {
+                createCalendarFunction();
+            });
+            elem.appendChild(select);
+        }
+        function createCalendarFunction(){
+            let selectYear=document.getElementsByClassName('year')[0],
+            selectedYear = selectYear.options[selectYear.selectedIndex]; 
+            let selectManth=document.getElementsByClassName('manth')[0],
+            selectedManth= selectManth.options[selectManth.selectedIndex]; 
+            createCalendar('calendar', selectedYear.text, selectedManth.text);
+            //createCalendar('calendar', selectedYear.text, selectedManth.text, "delChildren");
+        }
+
+      
+
+    </script>
+    <script>
+        //Сalendar navigation
+        let tableCal=document.getElementById('calendar');
+        tableCal.addEventListener("click",(event)=>{
+            if(event.target="td"){
+
+                let str = event.target.innerHTML,
+                reg = /\d{1,2}/;                
+                
+                if (str.match(reg)!=null)
+                    console.log(str.match(reg)[0]);
+            }
+        })
+    </script>
+</body>
+
+</html>
