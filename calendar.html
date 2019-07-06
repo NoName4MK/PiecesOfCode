@@ -38,7 +38,7 @@
 
     <script>
         // Create Calendar
-        function createCalendar(id, year, month) {
+        function createCalendar(id, year, month, action="addChildren") {
 
             let date = new Date(year,month-1,1,1,0,0),
             numberDaysWeek=7,
@@ -62,12 +62,19 @@
       
             let col;
             let startNumber=0;
-            if (endDate%7==0) col=endDate/7;
+            if (endDate%7==0) col=endDate/7+1;
             else {
                 col=(endDate-(endDate%7))/7+1;
+                console.log(col);
             };
       
             let elem = document.getElementById(id)
+            if (action="delChildren")
+            {
+                while (elem.firstChild){
+                    elem.removeChild(elem.firstChild);
+                }
+            }
             let table = document.createElement('table');
             let nextDay=0;
             for (i = 0; i < col+1; i++) {
@@ -131,8 +138,7 @@
             selectedYear = selectYear.options[selectYear.selectedIndex]; 
             let selectManth=document.getElementsByClassName('manth')[0],
             selectedManth= selectManth.options[selectManth.selectedIndex]; 
-            createCalendar('calendar', selectedYear.text, selectedManth.text);
-            //createCalendar('calendar', selectedYear.text, selectedManth.text, "delChildren");
+            createCalendar('calendar', selectedYear.text, selectedManth.text, "delChildren");
         }
 
       
